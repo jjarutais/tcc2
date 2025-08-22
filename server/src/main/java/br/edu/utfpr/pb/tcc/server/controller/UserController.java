@@ -23,4 +23,10 @@ public class UserController {
         return GenericResponse.builder().message("User saved.").build();
     }
 
+    @PostMapping
+    public GenericResponse createUser(@Valid @RequestBody User user) {
+        userService.save(user);
+        return GenericResponse.builder().message("User saved.").build();
+    }
+
 }
