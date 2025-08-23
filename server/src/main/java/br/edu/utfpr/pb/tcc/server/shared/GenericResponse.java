@@ -6,9 +6,11 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class GenericResponse {
 
     private String message;
 
+    public static GenericResponse of(String message) {
+        return new GenericResponse(message);
+    }
 }

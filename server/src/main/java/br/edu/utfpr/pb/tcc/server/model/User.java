@@ -1,6 +1,5 @@
 package br.edu.utfpr.pb.tcc.server.model;
 
-import br.edu.utfpr.pb.tcc.server.annotation.UniqueUsername;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import java.util.Collection;
 //Usuário = {id: Long, nome: String, senha: String}
 
 @Entity
-@Table(name = "tb_user")
+@Table(name = "usuarios")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,7 +27,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @UniqueUsername
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.username.NotNull}")
     @Size(min = 4, max = 255)
     private String username;

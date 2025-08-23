@@ -4,16 +4,11 @@ import br.edu.utfpr.pb.tcc.server.annotation.UniqueUsername;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-
+@Getter
+@Setter
 public class UserDto {
     private Long id;
 
@@ -31,4 +26,5 @@ public class UserDto {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
+
 }
