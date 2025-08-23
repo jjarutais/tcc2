@@ -28,15 +28,15 @@ public class User implements UserDetails {
     private Long id;
 
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.username.NotNull}")
-    @Size(min = 4, max = 255)
+    @Size(min = 4, max = 255, message = "{br.edu.pb.utfpr.tcc.server.user.username.Size}")
     private String username;
 
-    @NotNull
-    @Size(min = 4, max = 255)
+    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.displayName.NotNull}")
+    @Size(min = 4, max = 255, message = "{br.edu.pb.utfpr.tcc.server.user.displayName.Size}")
     private String displayName;
 
-    @NotNull
-    @Size(min = 6)
+    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.password.NotNull}")
+    @Size(min = 6, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;

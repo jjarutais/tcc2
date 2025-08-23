@@ -22,14 +22,13 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
         if (username == null) {
-            return true; // null values should be validated by @NotNull
+            return true;
         }
         
         try {
             UserRepository userRepository = applicationContext.getBean(UserRepository.class);
             return userRepository.findByUsername(username) == null;
         } catch (Exception e) {
-            // Se não conseguir acessar o repository, retorna true para não bloquear a validação
             return true;
         }
     }

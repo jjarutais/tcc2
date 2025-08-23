@@ -57,18 +57,11 @@ public class WebSecurity {
                 exceptionHandling.authenticationEntryPoint(
                         authenticationEntryPoint));
 
-        // http.cors(AbstractHttpConfigurer::disable);
         http.cors(cors -> corsConfigurationSource());
 
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/orders/**").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/orders/**").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/orders-products/**").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/orders-products/**").permitAll()
                 .anyRequest().authenticated()
         );
 
@@ -114,5 +107,5 @@ public class WebSecurity {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }
+

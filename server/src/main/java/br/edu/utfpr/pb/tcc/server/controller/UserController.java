@@ -20,7 +20,7 @@ public class UserController {
     @PostMapping
     public GenericResponse createUser(@Valid @RequestBody UserDto userDto) {
         userService.save(userDto);
-        return GenericResponse.of("User saved.");
+        return GenericResponse.of("Usuário salvo com sucesso!");
     }
 
 }
