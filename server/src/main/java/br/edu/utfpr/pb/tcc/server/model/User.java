@@ -11,8 +11,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-
-//Usuário = {id: Long, nome: String, senha: String}
+import java.util.Collections;
 
 @Entity
 @Table(name = "usuarios")
@@ -41,9 +40,14 @@ public class User implements UserDetails {
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
 
+    private String role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("ROLE_USER");
+        if (role == null) {
+            return Collections.emptyList();
+        }
+        return AuthorityUtils.createAuthorityList("ROLE_" + role.toUpperCase());
     }
 
     @Override
