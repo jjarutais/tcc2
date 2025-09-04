@@ -2,6 +2,7 @@ package br.edu.utfpr.pb.tcc.server.service;
 
 import br.edu.utfpr.pb.tcc.server.dto.UserDto;
 import br.edu.utfpr.pb.tcc.server.model.User;
+import br.edu.utfpr.pb.tcc.server.model.UserRole;
 import br.edu.utfpr.pb.tcc.server.repository.UserRepository;
 import br.edu.utfpr.pb.tcc.server.service.impl.CrudServiceImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,13 +27,12 @@ public class UserService extends CrudServiceImpl<User, Long> {
     }
 
     public User save(UserDto userDto) {
-        User user = User.builder()
-                .username(userDto.getUsername())
-                .displayName(userDto.getDisplayName())
-                .password(passwordEncoder.encode(userDto.getPassword()))
-                .role(userDto.getRole())
-                .active(true)
-                .build();
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setDisplayName(userDto.getDisplayName());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setRole(userDto.getRole());
+        user.setActive(true);
 
         return userRepository.save(user);
     }
@@ -56,7 +56,7 @@ public class UserService extends CrudServiceImpl<User, Long> {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if ("ADMIN".equals(user.getRole())) {
+            if (user.getRole() == UserRole.ROLE_ADMIN) {
                 return false;
             }
             userRepository.deleteById(id);
@@ -64,6 +64,7 @@ public class UserService extends CrudServiceImpl<User, Long> {
         }
         return false;
     }
+
 
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);

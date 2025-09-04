@@ -2,13 +2,11 @@ package br.edu.utfpr.pb.tcc.server.dto;
 
 import br.edu.utfpr.pb.tcc.server.annotation.UniqueAdmin;
 import br.edu.utfpr.pb.tcc.server.annotation.UniqueUsername;
+import br.edu.utfpr.pb.tcc.server.model.UserRole;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -28,12 +26,14 @@ public class UserDto {
 
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.password.NotNull}")
     @Size(min = 8, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
-            message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
+            message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}"
+    )
     private String password;
 
     @UniqueAdmin
-    private String role;
+    private UserRole role;
 
     private boolean active;
 }

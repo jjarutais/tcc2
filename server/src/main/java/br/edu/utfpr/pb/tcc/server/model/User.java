@@ -1,6 +1,8 @@
 package br.edu.utfpr.pb.tcc.server.model;
 
+import br.edu.utfpr.pb.tcc.server.annotation.UniqueUsername;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -10,7 +12,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+
+//Usuário = {id: Long, nome: String, senha: String}
 
 @Entity
 @Table(name = "usuarios")
@@ -19,36 +22,34 @@ import java.util.Collections;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User implements UserDetails, IActivatable {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @UniqueUsername
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.username.NotNull}")
-    @Size(min = 4, max = 255, message = "{br.edu.pb.utfpr.tcc.server.user.username.Size}")
+    @Size(min = 4, max = 255)
     private String username;
 
-    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.displayName.NotNull}")
-    @Size(min = 4, max = 255, message = "{br.edu.pb.utfpr.tcc.server.user.displayName.Size}")
+    @NotNull
+    @Size(min = 4, max = 255)
     private String displayName;
 
-    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.password.NotNull}")
-    @Size(min = 8, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
+    @NotNull
+    @Size(min = 6)
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
 
-    private String role;
-
-    private boolean active = true;
+    @Getter
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (role == null) {
-            return Collections.emptyList();
-        }
-        return AuthorityUtils.createAuthorityList("ROLE_" + role.toUpperCase());
+        return AuthorityUtils.createAuthorityList("ROLE_USER");
     }
 
     @Override
@@ -68,16 +69,13 @@ public class User implements UserDetails, IActivatable {
 
     @Override
     public boolean isEnabled() {
-        return this.active;
+        return true;
     }
 
-    @Override
-    public boolean isActive() {
-        return this.active;
+    public void setRole(UserRole role) {
     }
 
-    @Override
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setActive(boolean b) {
     }
+
 }
