@@ -4,19 +4,12 @@ import br.edu.utfpr.pb.tcc.server.dto.CategoryDto;
 import br.edu.utfpr.pb.tcc.server.model.Category;
 import br.edu.utfpr.pb.tcc.server.service.ICategoryService;
 import br.edu.utfpr.pb.tcc.server.service.ICrudService;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("categories")
-public class CategoryController extends CrudController<Category, CategoryDto, Long>{
+public class CategoryController extends CrudController<Category, CategoryDto, Long> {
 
     private final ICategoryService service;
     private final ModelMapper modelMapper;

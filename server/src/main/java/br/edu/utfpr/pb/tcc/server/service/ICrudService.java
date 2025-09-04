@@ -1,11 +1,13 @@
 package br.edu.utfpr.pb.tcc.server.service;
 
+import br.edu.utfpr.pb.tcc.server.model.IActivatable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 public interface ICrudService<T, ID extends Serializable> {
 
@@ -23,7 +25,7 @@ public interface ICrudService<T, ID extends Serializable> {
 
     void flush();
 
-    T findOne(ID id);
+    Optional<T> findOne(ID id);
 
     boolean exists(ID id);
 
@@ -35,4 +37,9 @@ public interface ICrudService<T, ID extends Serializable> {
 
     void deleteAll();
 
+    void activate(ID id);
+
+    void deactivate(ID id);
+
+    List<T> findActive();
 }

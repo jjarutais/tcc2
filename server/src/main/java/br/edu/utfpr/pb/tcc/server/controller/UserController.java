@@ -1,74 +1,62 @@
 package br.edu.utfpr.pb.tcc.server.controller;
 
 import br.edu.utfpr.pb.tcc.server.dto.UserDto;
+import br.edu.utfpr.pb.tcc.server.model.User;
+import br.edu.utfpr.pb.tcc.server.service.ICrudService;
 import br.edu.utfpr.pb.tcc.server.service.UserService;
 import br.edu.utfpr.pb.tcc.server.shared.GenericResponse;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import br.edu.utfpr.pb.tcc.server.model.User;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("users")
-public class UserController {
+public class UserController extends CrudController<User, UserDto, Long> {
 
     private final UserService userService;
     private final MessageSource messageSource;
+    private final ModelMapper modelMapper;
 
-    public UserController(UserService userService, MessageSource messageSource) {
+    public UserController(UserService userService, MessageSource messageSource, ModelMapper modelMapper) {
+        super(User.class, UserDto.class);
         this.userService = userService;
         this.messageSource = messageSource;
+        this.modelMapper = modelMapper;
+    }
+
+    @Override
+    protected ICrudService<User, Long> getService() {
+        return userService;
+    }
+
+    @Override
+    protected ModelMapper getModelMapper() {
+        return modelMapper;
     }
 
     @PostMapping
     public GenericResponse createUser(@Valid @RequestBody UserDto userDto) {
         userService.save(userDto);
-        return GenericResponse.of("Usuário salvo com sucesso!");
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<GenericResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
-        if (userService.update(id, userDto)) {
-            return ResponseEntity.ok(GenericResponse.of("Usuário atualizado com sucesso!"));
-        } else {
-            String notFoundMessage = messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.notFound", null, LocaleContextHolder.getLocale());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GenericResponse.of(notFoundMessage));
-        }
+        return GenericResponse.of(messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.created", null, LocaleContextHolder.getLocale()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<GenericResponse> deleteUser(@PathVariable Long id) {
-        if (userService.delete(id)) {
+        if (userService.safeDelete(id)) {
             return ResponseEntity.ok(GenericResponse.of("Usuário excluído com sucesso!"));
         } else {
-            String notFoundMessage = messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.notFound", null, LocaleContextHolder.getLocale());
             String deleteAdminViolationMessage = messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.deleteAdmin.violation", null, LocaleContextHolder.getLocale());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(GenericResponse.of(deleteAdminViolationMessage));
         }
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id) {
-        User user = userService.findById(id);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{id}/deactivate")
-    public ResponseEntity<GenericResponse> deactivateUser(@PathVariable Long id) {
-        if (userService.updateActiveStatus(id, false)) {
-            return ResponseEntity.ok(GenericResponse.of("Usuário desativado com sucesso!"));
-        } else {
-            String notFoundMessage = messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.notFound", null, LocaleContextHolder.getLocale());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GenericResponse.of(notFoundMessage));
-        }
-    }
-
 }

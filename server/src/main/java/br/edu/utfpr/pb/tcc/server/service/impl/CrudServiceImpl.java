@@ -1,5 +1,6 @@
 package br.edu.utfpr.pb.tcc.server.service.impl;
 
+import br.edu.utfpr.pb.tcc.server.model.IActivatable;
 import br.edu.utfpr.pb.tcc.server.service.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class CrudServiceImpl<T, ID extends Serializable>
         implements ICrudService<T, ID> {
@@ -51,8 +54,8 @@ public abstract class CrudServiceImpl<T, ID extends Serializable>
     }
 
     @Override
-    public T findOne(ID id) {
-        return getRepository().findById(id).orElse(null);
+    public Optional<T> findOne(ID id) {
+        return getRepository().findById(id);
     }
 
     @Override
@@ -79,5 +82,32 @@ public abstract class CrudServiceImpl<T, ID extends Serializable>
     @Override
     public void deleteAll() {
         getRepository().deleteAll();
+    }
+
+    @Override
+    public void activate(ID id) {
+        getRepository().findById(id).ifPresent(entity -> {
+            if (entity instanceof IActivatable) {
+                ((IActivatable) entity).setActive(true);
+                getRepository().save(entity);
+            }
+        });
+    }
+
+    @Override
+    public void deactivate(ID id) {
+        getRepository().findById(id).ifPresent(entity -> {
+            if (entity instanceof IActivatable) {
+                ((IActivatable) entity).setActive(false);
+                getRepository().save(entity);
+            }
+        });
+    }
+
+    @Override
+    public List<T> findActive() {
+        return getRepository().findAll().stream()
+                .filter(entity -> (entity instanceof IActivatable) && ((IActivatable) entity).isActive())
+                .collect(Collectors.toList());
     }
 }

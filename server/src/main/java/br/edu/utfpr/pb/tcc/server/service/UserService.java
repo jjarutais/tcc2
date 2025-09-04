@@ -3,12 +3,14 @@ package br.edu.utfpr.pb.tcc.server.service;
 import br.edu.utfpr.pb.tcc.server.dto.UserDto;
 import br.edu.utfpr.pb.tcc.server.model.User;
 import br.edu.utfpr.pb.tcc.server.repository.UserRepository;
+import br.edu.utfpr.pb.tcc.server.service.impl.CrudServiceImpl;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService extends CrudServiceImpl<User, Long> {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -16,6 +18,11 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    protected JpaRepository<User, Long> getRepository() {
+        return userRepository;
     }
 
     public User save(UserDto userDto) {
@@ -45,7 +52,7 @@ public class UserService {
         return false;
     }
 
-    public boolean delete(Long id) {
+    public boolean safeDelete(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -60,16 +67,5 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
-    }
-
-    public boolean updateActiveStatus(Long id, boolean active) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setActive(active);
-            userRepository.save(user);
-            return true;
-        }
-        return false;
     }
 }

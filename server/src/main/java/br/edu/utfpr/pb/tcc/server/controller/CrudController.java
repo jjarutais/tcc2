@@ -1,5 +1,6 @@
 package br.edu.utfpr.pb.tcc.server.controller;
 
+import br.edu.utfpr.pb.tcc.server.model.IActivatable;
 import br.edu.utfpr.pb.tcc.server.service.ICrudService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,8 @@ import jakarta.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
+
 // T = class type, D = dto type, ID = attribute related to primary key type
 public abstract class CrudController <T, D, ID extends Serializable> {
 
@@ -35,7 +38,7 @@ public abstract class CrudController <T, D, ID extends Serializable> {
         return getModelMapper().map(entityDto, this.typeClass);
     }
 
-    @GetMapping //http://ip.api:port/classname
+    @GetMapping
     public ResponseEntity<List<D>> findAll() {
         return ResponseEntity.ok(
                 getService().findAll().stream().map(
@@ -44,7 +47,7 @@ public abstract class CrudController <T, D, ID extends Serializable> {
         );
     }
 
-    @GetMapping("page")  //http://ip.api:port/classname/page
+    @GetMapping("page")
     public ResponseEntity<Page<D>> findAll(
             @RequestParam int page,
             @RequestParam int size,
@@ -63,26 +66,21 @@ public abstract class CrudController <T, D, ID extends Serializable> {
 
     @GetMapping("{id}")
     public ResponseEntity<D> findOne(@PathVariable ID id) {
-        T entity = getService().findOne(id);
-        if ( entity != null) {
-            return ResponseEntity.ok(convertToDto(entity));
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+        Optional<T> entity = getService().findOne(id);
+        return entity.map(value -> ResponseEntity.ok(convertToDto(value)))
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @PostMapping
     public ResponseEntity<D> create(@RequestBody @Valid D entity) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(convertToDto(getService().save(convertToEntity(entity))));
-
     }
 
     @PutMapping("{id}")
     public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D entity) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(convertToDto(getService().save(convertToEntity(entity))));
-
     }
 
     @GetMapping("exists/{id}")
@@ -101,4 +99,24 @@ public abstract class CrudController <T, D, ID extends Serializable> {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<Void> activate(@PathVariable ID id) {
+        getService().activate(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<Void> deactivate(@PathVariable ID id) {
+        getService().deactivate(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<D>> findActive() {
+        List<T> activeEntities = getService().findActive();
+        List<D> dtos = activeEntities.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
 }
