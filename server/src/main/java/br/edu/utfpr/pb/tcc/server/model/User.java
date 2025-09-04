@@ -1,8 +1,6 @@
 package br.edu.utfpr.pb.tcc.server.model;
 
-import br.edu.utfpr.pb.tcc.server.annotation.UniqueUsername;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -12,11 +10,10 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-
-//Usuário = {id: Long, nome: String, senha: String}
+import java.util.Collections;
 
 @Entity
-@Table(name = "tb_user")
+@Table(name = "usuarios")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,24 +25,30 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @UniqueUsername
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.username.NotNull}")
-    @Size(min = 4, max = 255)
+    @Size(min = 4, max = 255, message = "{br.edu.pb.utfpr.tcc.server.user.username.Size}")
     private String username;
 
-    @NotNull
-    @Size(min = 4, max = 255)
+    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.displayName.NotNull}")
+    @Size(min = 4, max = 255, message = "{br.edu.pb.utfpr.tcc.server.user.displayName.Size}")
     private String displayName;
 
-    @NotNull
-    @Size(min = 6)
+    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.password.NotNull}")
+    @Size(min = 8, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
 
+    private String role;
+
+    private boolean active;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("ROLE_USER");
+        if (role == null) {
+            return Collections.emptyList();
+        }
+        return AuthorityUtils.createAuthorityList("ROLE_" + role.toUpperCase());
     }
 
     @Override
@@ -65,6 +68,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.active;
     }
 }
