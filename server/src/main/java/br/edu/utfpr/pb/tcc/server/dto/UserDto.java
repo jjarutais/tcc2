@@ -27,11 +27,13 @@ public class UserDto {
     private String displayName;
 
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.password.NotNull}")
-    @Size(min = 6, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
+    @Size(min = 8, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
 
     @UniqueAdmin
     private String role;
+
+    private boolean active;
 }

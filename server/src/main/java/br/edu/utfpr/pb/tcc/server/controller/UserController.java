@@ -46,7 +46,8 @@ public class UserController {
             return ResponseEntity.ok(GenericResponse.of("Usuário excluído com sucesso!"));
         } else {
             String notFoundMessage = messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.notFound", null, LocaleContextHolder.getLocale());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GenericResponse.of(notFoundMessage));
+            String deleteAdminViolationMessage = messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.deleteAdmin.violation", null, LocaleContextHolder.getLocale());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(GenericResponse.of(deleteAdminViolationMessage));
         }
     }
 
@@ -57,6 +58,16 @@ public class UserController {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<GenericResponse> deactivateUser(@PathVariable Long id) {
+        if (userService.updateActiveStatus(id, false)) {
+            return ResponseEntity.ok(GenericResponse.of("Usuário desativado com sucesso!"));
+        } else {
+            String notFoundMessage = messageSource.getMessage("br.edu.pb.utfpr.tcc.server.user.notFound", null, LocaleContextHolder.getLocale());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GenericResponse.of(notFoundMessage));
         }
     }
 

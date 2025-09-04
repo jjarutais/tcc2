@@ -61,6 +61,7 @@ public class WebSecurity {
 
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                 .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
         );
@@ -92,8 +93,7 @@ public class WebSecurity {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Lista das origens autorizadas, no nosso caso que iremos rodar a aplicação localmente o * poderia ser trocado
-        // por: http://localhost:porta, em que :porta será a porta em que a aplicação cliente será executada
+        // Lista das origens autorizadas
         configuration.setAllowedOrigins(List.of("*"));
         // Lista dos métodos HTTP autorizados
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
@@ -108,4 +108,3 @@ public class WebSecurity {
         return source;
     }
 }
-

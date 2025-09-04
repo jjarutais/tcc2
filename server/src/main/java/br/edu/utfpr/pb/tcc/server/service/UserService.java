@@ -24,6 +24,7 @@ public class UserService {
                 .displayName(userDto.getDisplayName())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .role(userDto.getRole())
+                .active(true)
                 .build();
 
         return userRepository.save(user);
@@ -31,6 +32,7 @@ public class UserService {
 
     public User save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setActive(true);
         return userRepository.save(user);
     }
 
@@ -50,7 +52,12 @@ public class UserService {
     }
 
     public boolean delete(Long id) {
-        if (userRepository.existsById(id)) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if ("ADMIN".equals(user.getRole())) {
+                return false;
+            }
             userRepository.deleteById(id);
             return true;
         }
@@ -59,5 +66,16 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public boolean updateActiveStatus(Long id, boolean active) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setActive(active);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 }

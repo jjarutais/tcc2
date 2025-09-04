@@ -1,7 +1,6 @@
 package br.edu.utfpr.pb.tcc.server.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -35,12 +34,14 @@ public class User implements UserDetails {
     private String displayName;
 
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.password.NotNull}")
-    @Size(min = 6, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
+    @Size(min = 8, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
 
     private String role;
+
+    private boolean active;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -67,6 +68,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.active;
     }
 }
