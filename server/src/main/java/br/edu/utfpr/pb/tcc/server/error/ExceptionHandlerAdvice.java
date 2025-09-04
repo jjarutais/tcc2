@@ -26,7 +26,7 @@ public class ExceptionHandlerAdvice {
 
         return ApiError.builder()
                 .status(400)
-                .message("Validation error")
+                .message("Erro de validação")
                 .url(request.getServletPath())
                 .validationErrors(validationErrors)
                 .build();

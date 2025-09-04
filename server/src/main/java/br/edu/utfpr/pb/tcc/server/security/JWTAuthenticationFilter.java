@@ -36,7 +36,6 @@ public class JWTAuthenticationFilter
             HttpServletResponse response) throws AuthenticationException {
 
         try {
-            // {username: "admin@admin.com", password: "P4ssword"}
             User credentials = new ObjectMapper()
                     .readValue(request.getInputStream(), User.class);
 
@@ -68,7 +67,7 @@ public class JWTAuthenticationFilter
                         SecurityConstants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(SecurityConstants.SECRET));
         response.setContentType("application/json");
-        // {token : "123.456.789"}
+
         response.getWriter().write(
             new ObjectMapper().writeValueAsString(
                     new AuthenticationResponseDto(token)
