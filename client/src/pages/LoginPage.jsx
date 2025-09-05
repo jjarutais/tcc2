@@ -15,57 +15,40 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { api } from '@/lib/axios';
 
-// Esquema de validação para o formulário de login usando zod
-const formSchema = z.object({
-    username: z.string().min(4, {
-        message: 'O nome de usuário deve ter no mínimo 4 caracteres.',
-    }),
-    password: z.string().min(8, {
-        message: 'A senha deve ter no mínimo 8 caracteres.',
-    }),
-});
 
 function Login() {
     const [loginError, setLoginError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    // 1. Defina o seu formulário.
     const form = useForm({
-        resolver: zodResolver(formSchema),
         defaultValues: {
             username: '',
             password: '',
         },
     });
 
-    // 2. Defina o manipulador de submissão.
     async function onSubmit(values) {
         setLoginError('');
         setSuccessMessage('');
         try {
-            // Usando Axios para a requisição POST
             const response = await api.post('/login', {
                 username: values.username,
                 password: values.password,
             });
 
-            // salvar o token no localStorage
             setSuccessMessage('Login bem-sucedido!');
             console.log('Token JWT:', response.data.token);
             localStorage.setItem('authToken', response.data.token);
 
         } catch (error) {
             if (error.response) {
-                // A requisição foi feita e o servidor respondeu com um código de status de erro
                 const errorMessage = error.response.data.message || 'Erro ao tentar fazer login.';
                 setLoginError(errorMessage);
                 console.error('Login falhou:', errorMessage);
             } else if (error.request) {
-                // A requisição foi feita, mas não houve resposta do servidor
                 setLoginError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
                 console.error('Erro de rede:', error.request);
             } else {
-                // Algo aconteceu na configuração da requisição que gerou o erro
                 setLoginError('Erro inesperado durante a requisição.');
                 console.error('Erro:', error.message);
             }

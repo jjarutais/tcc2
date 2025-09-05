@@ -6,7 +6,7 @@ function AuthenticatedRoutes() {
     <Routes>
       <Route path="/login" element={<Login />} />
       {/* Redireciona para a página inicial se a rota não for encontrada */}
-      <Route path="*" element={<Navigate to="/home" />} />
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 }
