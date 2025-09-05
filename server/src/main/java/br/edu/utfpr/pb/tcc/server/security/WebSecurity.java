@@ -60,7 +60,7 @@ public class WebSecurity {
         http.cors(cors -> corsConfigurationSource());
 
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                 .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
@@ -93,11 +93,11 @@ public class WebSecurity {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Lista das origens autorizadas
+
         configuration.setAllowedOrigins(List.of("*"));
-        // Lista dos métodos HTTP autorizados
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT"));
-        // Lista dos Headers autorizados, o Authorization será o header que iremos utilizar para transferir o Token
+
         configuration.setAllowedHeaders(List.of("Authorization","x-xsrf-token",
                 "Access-Control-Allow-Headers", "Origin",
                 "Accept", "X-Requested-With", "Content-Type",
