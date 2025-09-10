@@ -36,4 +36,19 @@ public class CategoryController extends CrudController<Category, CategoryDto, Lo
     protected ModelMapper getModelMapper() {
         return modelMapper;
     }
+
+    @PostMapping
+    public ResponseEntity<CategoryDto> create(@RequestBody @Valid CategoryDto entity) {
+        Category savedEntity = getService().save(convertToEntity(entity));
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedEntity.getId())
+                .toUri();
+        return ResponseEntity.created(location)
+                .body(convertToDto(savedEntity));
+    }
+
+    private Category convertToEntity(CategoryDto entityDto) {
+        return getModelMapper().map(entityDto, Category.class);
+    }
 }
