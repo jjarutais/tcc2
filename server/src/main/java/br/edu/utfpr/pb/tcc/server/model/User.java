@@ -1,7 +1,7 @@
 package br.edu.utfpr.pb.tcc.server.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -11,11 +11,10 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-
-//Usuário = {id: Long, nome: String, senha: String}
+import java.util.Collections;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "user")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,14 +35,26 @@ public class User implements UserDetails {
     private String displayName;
 
     @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.password.NotNull}")
-    @Size(min = 6, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
+    @Size(min = 8, message = "{br.edu.pb.utfpr.tcc.server.user.password.Size}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
 
+    @Column(unique = true)
+    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.email.NotNull}")
+    @Email(message = "{br.edu.pb.utfpr.tcc.server.user.email.Valid}")
+    private String email;
+
+    private String role;
+
+    private boolean active;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("ROLE_USER");
+        if (role == null) {
+            return Collections.emptyList();
+        }
+        return AuthorityUtils.createAuthorityList("ROLE_" + role.toUpperCase());
     }
 
     @Override
@@ -63,6 +74,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.active;
     }
 }
