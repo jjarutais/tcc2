@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
-@Table(name = "user")
+@Table(name = "tb_user") //será alterado para "user" assim que migrar para o ambiente PostgreSQL, essa é uma palavra reservada no H2
 @Getter
 @Setter
 @AllArgsConstructor
