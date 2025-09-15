@@ -1,5 +1,6 @@
 package br.edu.utfpr.pb.tcc.server.service.impl;
 
+import br.edu.utfpr.pb.tcc.server.enumeration.CategoryType;
 import br.edu.utfpr.pb.tcc.server.model.Category;
 import br.edu.utfpr.pb.tcc.server.repository.CategoryRepository;
 import br.edu.utfpr.pb.tcc.server.service.ICategoryService;
@@ -23,4 +24,8 @@ public class CategoryServiceImpl extends CrudServiceImpl<Category, Long>
         return categoryRepository;
     }
 
+    @Override
+    public List<Category> findByType(CategoryType type) {
+        return categoryRepository.findByType(type);
+    }
 }

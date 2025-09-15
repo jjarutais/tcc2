@@ -1,6 +1,7 @@
 package br.edu.utfpr.pb.tcc.server.controller;
 
 import br.edu.utfpr.pb.tcc.server.dto.CategoryDto;
+import br.edu.utfpr.pb.tcc.server.enumeration.CategoryType;
 import br.edu.utfpr.pb.tcc.server.model.Category;
 import br.edu.utfpr.pb.tcc.server.service.ICategoryService;
 import br.edu.utfpr.pb.tcc.server.service.ICrudService;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("categories")
@@ -46,6 +48,15 @@ public class CategoryController extends CrudController<Category, CategoryDto, Lo
                 .toUri();
         return ResponseEntity.created(location)
                 .body(convertToDto(savedEntity));
+    }
+
+    @GetMapping("/byType/{type}")
+    public ResponseEntity<List<CategoryDto>> findByType(@PathVariable CategoryType type) {
+        List<Category> categories = service.findByType(type);
+        List<CategoryDto> categoryDtos = categories.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(categoryDtos);
     }
 
     private Category convertToEntity(CategoryDto entityDto) {
