@@ -61,6 +61,9 @@ public abstract class CrudController <T, D, ID extends Serializable> {
             setIdMethod.invoke(existingEntity, id);
         } catch (Exception e) {
             if (id instanceof Number) {
+
+                //TODO para que o commit dê certo - APAGAR
+
                 try {
                     java.lang.reflect.Method setIdMethod = existingEntity.getClass().getMethod("setId", Long.class);
                     setIdMethod.invoke(existingEntity, ((Number) id).longValue());
