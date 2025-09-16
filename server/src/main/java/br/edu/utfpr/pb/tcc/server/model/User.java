@@ -1,6 +1,7 @@
 package br.edu.utfpr.pb.tcc.server.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -13,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "tb_user") //será alterado para "user" assim que migrar para o ambiente PostgreSQL, essa é uma palavra reservada no H2
 @Getter
 @Setter
 @AllArgsConstructor
@@ -38,6 +39,11 @@ public class User implements UserDetails {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
             message = "{br.edu.pb.utfpr.tcc.server.user.password.Pattern}")
     private String password;
+
+    @Column(unique = true)
+    @NotNull(message = "{br.edu.pb.utfpr.tcc.server.user.email.NotNull}")
+    @Email(message = "{br.edu.pb.utfpr.tcc.server.user.email.Valid}")
+    private String email;
 
     private String role;
 

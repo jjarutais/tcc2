@@ -22,6 +22,7 @@ public class UserService {
         User user = User.builder()
                 .username(userDto.getUsername())
                 .displayName(userDto.getDisplayName())
+                .email(userDto.getEmail())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .role(userDto.getRole())
                 .active(true)
@@ -42,6 +43,7 @@ public class UserService {
             User user = optionalUser.get();
             user.setUsername(userDto.getUsername());
             user.setDisplayName(userDto.getDisplayName());
+            user.setEmail(userDto.getEmail());
             if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             }
