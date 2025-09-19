@@ -42,7 +42,7 @@ public class AccountsReceivableInstallment {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cash_id")
+    @JoinColumn(name = "cashBox_id")
     private CashBox cashBox;
 
     @NotNull

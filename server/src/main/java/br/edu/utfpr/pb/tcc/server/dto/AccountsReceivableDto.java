@@ -23,6 +23,7 @@ public class AccountsReceivableDto {
 
     private Long cashBoxId;
 
+    @NotNull
     private Long chargeMethodId;
 
     @NotNull
@@ -33,6 +34,7 @@ public class AccountsReceivableDto {
     @NotNull
     private BigDecimal totalAmount;
 
+    @NotNull
     private Integer dueDay;
 
     private LocalDateTime createdAt;

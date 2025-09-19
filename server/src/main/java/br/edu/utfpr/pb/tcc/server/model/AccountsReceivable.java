@@ -23,7 +23,7 @@ public class AccountsReceivable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cash_id")
+    @JoinColumn(name = "cashBox_id")
     private CashBox cashBox;
 
     @ManyToOne(fetch = FetchType.LAZY)
