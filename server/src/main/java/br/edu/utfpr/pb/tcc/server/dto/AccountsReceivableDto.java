@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -35,7 +35,12 @@ public class AccountsReceivableDto {
     private BigDecimal totalAmount;
 
     @NotNull
-    private Integer dueDay;
+    private Integer numberOfInstallments;
+
+    @NotNull
+    private LocalDate dueDate;
+
+    private BigDecimal initialPayment;
 
     private LocalDateTime createdAt;
 

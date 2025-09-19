@@ -1,13 +1,14 @@
 package br.edu.utfpr.pb.tcc.server.model;
 
+import br.edu.utfpr.pb.tcc.server.model.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -43,18 +44,34 @@ public class AccountsReceivable {
     @Column(name = "total_amount", precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
+    @NotNull
+    @Column(name = "number_of_installments")
+    private Integer numberOfInstallments;
+
+    @NotNull
+    @Column(name = "due_date")
+    private LocalDate dueDate;
+
+    @Column(name = "initial_payment", precision = 12, scale = 2)
+    private BigDecimal initialPayment;
+
     private String document;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    @Column(name = "due_day")
-    private Integer dueDay;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_user_id")
+    private User createdByUser;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_user_id")
-    private User createdByUser;
+    @JoinColumn(name = "updated_by_user_id")
+    private User updatedByUser;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
 }
