@@ -43,11 +43,11 @@ public class JWTAuthenticationFilter
                     credentials.getUsername());
 
             return authenticationManager.authenticate(
-               new UsernamePasswordAuthenticationToken(
-                    credentials.getUsername(),
-                    credentials.getPassword(),
-                    user.getAuthorities()
-               )
+                    new UsernamePasswordAuthenticationToken(
+                            user,
+                            credentials.getPassword(),
+                            user.getAuthorities()
+                    )
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
