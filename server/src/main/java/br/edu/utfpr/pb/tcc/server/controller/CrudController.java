@@ -49,10 +49,33 @@ public abstract class CrudController <T, D, ID extends Serializable> {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D entity) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(convertToDto(getService().save(convertToEntity(entity))));
+    public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D entityDto) {
+        T existingEntity = getService().findOne(id);
+        if (existingEntity == null) {
+            return ResponseEntity.notFound().build();
+        }
+        getModelMapper().map(entityDto, existingEntity);
 
+        try {
+            java.lang.reflect.Method setIdMethod = existingEntity.getClass().getMethod("setId", id.getClass());
+            setIdMethod.invoke(existingEntity, id);
+        } catch (Exception e) {
+            if (id instanceof Number) {
+
+                //TODO para que o commit dê certo - APAGAR
+
+                try {
+                    java.lang.reflect.Method setIdMethod = existingEntity.getClass().getMethod("setId", Long.class);
+                    setIdMethod.invoke(existingEntity, ((Number) id).longValue());
+                } catch (Exception ex) {
+                    throw new RuntimeException("Failed to set ID on entity", ex);
+                }
+            } else {
+                throw new RuntimeException("Failed to set ID on entity", e);
+            }
+        }
+        T updatedEntity = getService().save(existingEntity);
+        return ResponseEntity.status(HttpStatus.OK).body(convertToDto(updatedEntity));
     }
 
     @GetMapping("exists/{id}")
