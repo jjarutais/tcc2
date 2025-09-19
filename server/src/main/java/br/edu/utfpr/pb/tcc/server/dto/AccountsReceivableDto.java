@@ -1,9 +1,6 @@
 package br.edu.utfpr.pb.tcc.server.dto;
 
-import br.edu.utfpr.pb.tcc.server.model.CashBox;
-import br.edu.utfpr.pb.tcc.server.model.ChargeMethod;
-import br.edu.utfpr.pb.tcc.server.model.ClientSupplier;
-import br.edu.utfpr.pb.tcc.server.model.Category;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,10 +35,12 @@ public class AccountsReceivableDto {
     private Integer numberOfInstallments;
 
     @NotNull
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dueDate;
 
     private BigDecimal initialPayment;
 
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
 
     private Long createdByUserId;

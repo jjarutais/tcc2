@@ -54,6 +54,7 @@ public class AccountsReceivableServiceImpl extends CrudServiceImpl<AccountsRecei
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         accountsReceivable.setCreatedByUser(currentUser);
+        accountsReceivable.setCreatedAt(LocalDateTime.now());
 
         // Salva a entidade pai
         AccountsReceivable savedAccountsReceivable = super.save(accountsReceivable);

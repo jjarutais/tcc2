@@ -1,6 +1,7 @@
 package br.edu.utfpr.pb.tcc.server.dto;
 
 import br.edu.utfpr.pb.tcc.server.enumeration.InstallmentStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,8 +38,10 @@ public class AccountsReceivableInstallmentDto {
     private BigDecimal amountPaid;
 
     @NotNull
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dueDate;
 
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate paymentDate;
 
     private InstallmentStatus status;
@@ -47,8 +50,10 @@ public class AccountsReceivableInstallmentDto {
 
     private Long updatedByUserId;
 
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime updatedAt;
 
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
 
     private Long createdByUserId;
