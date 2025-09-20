@@ -1,12 +1,5 @@
 import { api } from "@/lib/axios";
 
-// Você pode definir as interfaces em um arquivo separado, mas para este exemplo,
-// vamos defini-las aqui para simplificar.
-// interface IUserLogin {
-//   username: string;
-//   password: string;
-// }
-
 const login = async (user) => {
   let response;
   try {
